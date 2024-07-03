@@ -1,0 +1,17 @@
+SELECT c.fName,
+       c.lName,
+       c.mName,
+       m.title,
+       MONTHNAME(r.requestedDate) AS rental_month,
+       EXTRACT(YEAR FROM r.requestedDate) AS rental_year,
+       (SELECT COUNT(*) 
+        FROM tbl_rents_info r_sub
+        WHERE r_sub.tbl_customer_info_id = c.id 
+        AND r_sub.tbl_movie_info_id = m.id) AS quantity_rented
+FROM tbl_customer_info c,
+     tbl_movie_info m,
+     tbl_rents_info r
+WHERE EXISTS (SELECT 1 
+              FROM tbl_rents_info r_sub
+              WHERE r_sub.tbl_customer_info_id = c.id 
+              AND r_sub.tbl_movie_info_id = m.id);
